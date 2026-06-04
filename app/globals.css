@@ -1,0 +1,258 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ============================================================================
+   REDTHREAD — global stylesheet
+   The design tokens here are the single source of truth for the aesthetic.
+   See docs/DESIGN_SYSTEM.md for the rationale behind every value.
+
+   Mental model:
+     - The ENVIRONMENT is a dim situation room (warm near-black).
+     - CONTENT lives on aged-manila PAPER pinned to a CORK board.
+     - The single accent is REDTHREAD red — the string. Used sparingly.
+   ========================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* shadcn surface tokens (dark war-room chrome) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* REDTHREAD bespoke tokens — used by components/redthread/* */
+  --color-paper: var(--paper);
+  --color-paper-foreground: var(--paper-foreground);
+  --color-paper-aged: var(--paper-aged);
+  --color-ink: var(--ink);
+  --color-ink-faded: var(--ink-faded);
+  --color-cork: var(--cork);
+  --color-cork-foreground: var(--cork-foreground);
+  --color-redthread: var(--redthread);
+  --color-redthread-glow: var(--redthread-glow);
+  --color-stamp: var(--stamp);
+  --color-ochre: var(--ochre);
+  --color-pin: var(--pin);
+
+  /* Typography — Special Elite (typewriter display) + JetBrains Mono (everything else) */
+  --font-sans: var(--font-jetbrains);
+  --font-mono: var(--font-jetbrains);
+  --font-typewriter: var(--font-special-elite);
+  --font-heading: var(--font-special-elite);
+
+  /* Sharper corners than stock shadcn — case files are rectangular */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+}
+
+:root {
+  --radius: 0.3rem;
+
+  /* Situation-room chrome (warm dark) */
+  --background: oklch(0.17 0.012 55);
+  --foreground: oklch(0.90 0.018 80);
+  --card: oklch(0.21 0.014 55);
+  --card-foreground: oklch(0.90 0.018 80);
+  --popover: oklch(0.19 0.014 55);
+  --popover-foreground: oklch(0.90 0.018 80);
+  --primary: oklch(0.53 0.196 25);
+  --primary-foreground: oklch(0.97 0.012 85);
+  --secondary: oklch(0.26 0.012 55);
+  --secondary-foreground: oklch(0.90 0.018 80);
+  --muted: oklch(0.25 0.010 55);
+  --muted-foreground: oklch(0.66 0.022 78);
+  --accent: oklch(0.30 0.018 60);
+  --accent-foreground: oklch(0.92 0.018 80);
+  --destructive: oklch(0.55 0.205 27);
+  --border: oklch(0.44 0.015 55 / 0.32);
+  --input: oklch(0.46 0.015 55 / 0.45);
+  --ring: oklch(0.53 0.196 25 / 0.55);
+
+  --chart-1: oklch(0.53 0.196 25);
+  --chart-2: oklch(0.72 0.12 72);
+  --chart-3: oklch(0.62 0.08 200);
+  --chart-4: oklch(0.66 0.10 140);
+  --chart-5: oklch(0.55 0.10 300);
+
+  --sidebar: oklch(0.19 0.013 55);
+  --sidebar-foreground: oklch(0.90 0.018 80);
+  --sidebar-primary: oklch(0.53 0.196 25);
+  --sidebar-primary-foreground: oklch(0.97 0.012 85);
+  --sidebar-accent: oklch(0.30 0.018 60);
+  --sidebar-accent-foreground: oklch(0.92 0.018 80);
+  --sidebar-border: oklch(0.44 0.015 55 / 0.32);
+  --sidebar-ring: oklch(0.53 0.196 25 / 0.55);
+
+  /* Paper, cork, ink, string */
+  --paper: oklch(0.89 0.035 86);
+  --paper-foreground: oklch(0.26 0.03 58);
+  --paper-aged: oklch(0.82 0.045 80);
+  --ink: oklch(0.23 0.03 55);
+  --ink-faded: oklch(0.42 0.03 60);
+  --cork: oklch(0.52 0.068 62);
+  --cork-foreground: oklch(0.20 0.03 55);
+  --redthread: oklch(0.53 0.21 25);
+  --redthread-glow: oklch(0.62 0.22 25);
+  --stamp: oklch(0.50 0.18 22);
+  --ochre: oklch(0.72 0.12 72);
+  --pin: oklch(0.60 0.16 40);
+}
+
+/* We ship a single dark identity in v1; mirror it under .dark so any
+   component that toggles the class stays coherent. */
+.dark {
+  --background: oklch(0.17 0.012 55);
+  --foreground: oklch(0.90 0.018 80);
+  --card: oklch(0.21 0.014 55);
+  --card-foreground: oklch(0.90 0.018 80);
+  --popover: oklch(0.19 0.014 55);
+  --popover-foreground: oklch(0.90 0.018 80);
+  --primary: oklch(0.53 0.196 25);
+  --primary-foreground: oklch(0.97 0.012 85);
+  --secondary: oklch(0.26 0.012 55);
+  --secondary-foreground: oklch(0.90 0.018 80);
+  --muted: oklch(0.25 0.010 55);
+  --muted-foreground: oklch(0.66 0.022 78);
+  --accent: oklch(0.30 0.018 60);
+  --accent-foreground: oklch(0.92 0.018 80);
+  --destructive: oklch(0.55 0.205 27);
+  --border: oklch(0.44 0.015 55 / 0.32);
+  --input: oklch(0.46 0.015 55 / 0.45);
+  --ring: oklch(0.53 0.196 25 / 0.55);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    /* faint amber selection, like a highlighter on a dossier */
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(ellipse 120% 80% at 50% -10%, oklch(0.24 0.02 55) 0%, transparent 55%),
+      radial-gradient(ellipse 100% 100% at 50% 120%, oklch(0.13 0.01 55) 0%, transparent 60%);
+    background-attachment: fixed;
+    letter-spacing: 0.005em;
+  }
+  ::selection {
+    background: var(--redthread);
+    color: var(--primary-foreground);
+  }
+  h1, h2, h3, .font-heading {
+    font-family: var(--font-typewriter);
+    letter-spacing: 0.01em;
+  }
+}
+
+/* ============================================================================
+   Texture & atmosphere utilities
+   ========================================================================== */
+@layer utilities {
+
+  /* Aged manila paper — grain via inline fractal-noise SVG + subtle stains. */
+  .paper-texture {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 22%, oklch(0.78 0.05 70 / 0.35) 0%, transparent 28%),
+      radial-gradient(circle at 82% 78%, oklch(0.78 0.05 70 / 0.30) 0%, transparent 30%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    color: var(--paper-foreground);
+  }
+
+  /* Corkboard surface — the canvas behind the pins. */
+  .cork-texture {
+    background-color: var(--cork);
+    background-image:
+      radial-gradient(circle at 50% 40%, oklch(0.58 0.07 62 / 0.6) 0%, transparent 65%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)' opacity='0.13'/%3E%3C/svg%3E");
+    background-blend-mode: multiply, normal;
+  }
+
+  /* CRT scanline + flicker overlay. Mounted once, fixed, non-interactive. */
+  .crt-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        oklch(0 0 0 / 0.16) 0px,
+        oklch(0 0 0 / 0.16) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+    animation: crt-flicker 5s steps(60) infinite;
+  }
+  .crt-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 90% 75% at 50% 50%, transparent 55%, oklch(0 0 0 / 0.45) 100%);
+  }
+
+  @keyframes crt-flicker {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.42; }
+    73% { opacity: 0.55; }
+  }
+
+  /* Hairline thread accent, e.g. a divider that looks like taut string. */
+  .thread-rule {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--redthread) 18%, var(--redthread-glow) 50%, var(--redthread) 82%, transparent);
+    box-shadow: 0 0 6px oklch(0.53 0.21 25 / 0.5);
+  }
+
+  /* Embossed declassification stamp look (component composes color + label). */
+  .stamp-emboss {
+    text-shadow: 0 1px 0 oklch(1 0 0 / 0.12);
+    mix-blend-mode: multiply;
+  }
+
+  /* Respect the user: kill motion-heavy atmosphere when asked. */
+  @media (prefers-reduced-motion: reduce) {
+    .crt-overlay { animation: none; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
