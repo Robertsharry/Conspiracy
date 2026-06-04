@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -17,9 +17,10 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import { PinNode } from "./pin-node";
+import { PinNode, type PinNodeData } from "./pin-node";
 import { RedStringEdge } from "./red-string-edge";
 import { BoardToolbar } from "./board-toolbar";
+import { PinInspector, type SelectedPin } from "./pin-inspector";
 import { createNode, moveNode, createEdge } from "@/lib/actions/node-actions";
 import type { NodeRow, EdgeRow } from "@/lib/data/boards";
 
@@ -38,7 +39,13 @@ function toFlowNodes(rows: NodeRow[]): Node[] {
     id: r.id,
     type: "pin",
     position: { x: r.x, y: r.y },
-    data: { type: r.type, title: r.title, body: r.body },
+    data: {
+      type: r.type,
+      title: r.title,
+      body: r.body,
+      sourceUrl: r.source_url,
+      score: r.score,
+    },
   }));
 }
 
@@ -57,6 +64,7 @@ const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`;
 function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState(toFlowNodes(initialNodes));
   const [edges, setEdges, onEdgesChange] = useEdgesState(toFlowEdges(initialEdges));
+  const [selected, setSelected] = useState<SelectedPin | null>(null);
 
   // Draw the red string: optimistic add, then persist (reconcile/rollback by id).
   const onConnect = useCallback(
@@ -110,6 +118,10 @@ function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasPro
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         onNodeDragStop={onNodeDragStop}
+        onNodeClick={(_event, node) =>
+          setSelected({ id: node.id, data: node.data as PinNodeData })
+        }
+        onPaneClick={() => setSelected(null)}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodesDraggable={canEdit}
@@ -136,6 +148,15 @@ function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasPro
       </ReactFlow>
 
       {canEdit && <BoardToolbar onAddPin={onAddPin} />}
+
+      {selected && (
+        <PinInspector
+          boardId={boardId}
+          pin={selected}
+          canEdit={canEdit}
+          onClose={() => setSelected(null)}
+        />
+      )}
 
       {nodes.length === 0 && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">

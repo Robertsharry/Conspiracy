@@ -7,6 +7,8 @@ export type PinNodeData = {
   type: string;
   title: string;
   body?: string | null;
+  sourceUrl?: string | null;
+  score?: number;
 };
 
 /** Accent color per pin type (the small type label). */
