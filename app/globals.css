@@ -256,3 +256,40 @@
     }
   }
 }
+
+/* ============================================================================
+   @xyflow / React Flow theming — make controls + minimap legible on the dark
+   board (defaults render dark icons on a near-dark surface).
+   ========================================================================== */
+.react-flow__controls {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px oklch(0 0 0 / 0.55);
+}
+.react-flow__controls-button {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  width: 30px;
+  height: 30px;
+}
+.react-flow__controls-button:hover {
+  background: var(--accent);
+}
+.react-flow__controls-button svg {
+  fill: var(--foreground);
+  max-width: 14px;
+  max-height: 14px;
+}
+.react-flow__minimap {
+  background-color: var(--card) !important;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.react-flow__minimap-mask {
+  fill: oklch(0 0 0 / 0.5);
+}
+.react-flow__attribution {
+  display: none;
+}
+
