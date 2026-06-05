@@ -32,7 +32,7 @@ Includes the board/forum data layer (was the deferred Phase 1 slice).
 
 ## Phase 2.5 — Community & Comms  *(requested)*
 - [x] **Forum / message board** — board-level case-notes thread (composer + nested replies + Corroborate/Discredit on posts); a "war room" discussion per case file.
-- [ ] **Profile media** — avatar/banner upload (images + **small** gifs, size-capped) to a Supabase `avatars` bucket; shown on dossier, posts, presence.
+- [x] **Profile media** — avatar upload (images + **small** gifs, ≤2MB) to a Supabase `avatars` bucket; shown on the dossier.
 - [x] **InMail** — discreet, async **1:1** messages (NOT live chat). `messages` table + RLS; a quiet inbox ("dead drops"), compose-to-shadow-name, read receipts. Intentionally understated, email-like.
 
 ## Phase 3 — The Wire

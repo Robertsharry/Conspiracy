@@ -67,3 +67,25 @@ export async function signOut(): Promise<void> {
   revalidatePath("/", "layout");
   redirect("/");
 }
+
+/** Point the operative's profile at a newly-uploaded avatar URL. */
+export async function updateAvatar(
+  url: string,
+): Promise<{ ok: true } | { error: string }> {
+  if (!/^https:\/\/[^\s]+$/.test(url)) return { error: "Invalid image URL." };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Initiate first." };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ avatar_url: url })
+    .eq("id", user.id);
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}

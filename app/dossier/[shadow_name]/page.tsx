@@ -7,6 +7,8 @@ import {
 import { RankBadge } from "@/components/redthread/rank-badge";
 import { PaperPanel } from "@/components/redthread/paper-panel";
 import { RedactedText } from "@/components/redthread/redacted-text";
+import { Avatar } from "@/components/redthread/avatar";
+import { AvatarUploader } from "@/components/profile/avatar-uploader";
 import { ButtonLink } from "@/components/ui/button-link";
 import { nextRank } from "@/lib/ranks";
 
@@ -45,10 +47,13 @@ export default async function DossierPage({
       <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
         Subject Dossier · File {profile.id.slice(0, 8).toUpperCase()}
       </p>
-      <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-        <h1 className="font-typewriter text-4xl uppercase text-foreground sm:text-5xl">
-          {profile.shadow_name}
-        </h1>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <Avatar url={profile.avatar_url} name={profile.shadow_name} size={64} />
+          <h1 className="font-typewriter text-4xl uppercase text-foreground sm:text-5xl">
+            {profile.shadow_name}
+          </h1>
+        </div>
         {isMe ? (
           <span className="font-mono text-[10px] uppercase tracking-widest text-redthread">
             ▍ this is you
@@ -64,6 +69,16 @@ export default async function DossierPage({
           </ButtonLink>
         ) : null}
       </div>
+      {isMe && (
+        <div className="mt-4">
+          <AvatarUploader
+            userId={profile.id}
+            name={profile.shadow_name}
+            currentUrl={profile.avatar_url}
+            compact
+          />
+        </div>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <RankBadge credibility={profile.credibility} />
         <span className="font-mono text-xs text-muted-foreground">

@@ -5,15 +5,25 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** Phase 2 → 2.5 (Community)
-- **Done:** Phase 0 · Phase 1 identity · Phase 2 board engine + inspector/votes · forum
-- **Branch:** `phase-2-evidence-board` (PR #3 → main). **All migrations applied & verified live.**
-- **Live locally:** auth, dossier, boards, canvas (pins + red string), inspector, votes, forum.
-- **Prod (`redthread.red`):** needs Vercel env vars set + PR #3 merged to `main`.
+- **Current phase:** Phase 2.5 complete → next: Realtime, then The Canon
+- **Done:** Phase 0 · Phase 1 · Phase 2 (board + inspector + votes) · Phase 2.5 (forum, InMail, profile media)
+- **Workflow:** feature branch → commit → PR → **merge to `main`** (per user). PRs #3, #4 merged.
+- **DB:** profiles/boards/etc live; new migrations (`messages`, `avatars`) apply on merge (Supabase GitHub app) or `supabase db push`.
+- **Prod (`redthread.red`):** needs Vercel env vars set; then it tracks `main`.
 
 ---
 
 ## Log (newest first)
+
+### 2026-06-04 — Phase 2.5 complete: InMail + profile media
+**InMail** (PR #4): `messages` + RLS (parties read / sender writes / recipient
+marks read), inbox + conversation + compose, nav link + dossier "Send InMail";
+discreet, email-like, async. **Profile media**: `avatars` storage bucket + RLS,
+`AvatarUploader` (≤2MB; png/jpg/webp/gif via `unoptimized` next/image so gifs
+animate), `Avatar` with initials fallback on the dossier; next.config
+remotePatterns for `*.supabase.co`. Workflow is now branch → commit → PR → merge.
+**Next:** Realtime on the board (presence + live pins/strings + cursors), then
+the Canon (missing scientists ranked at the top).
 
 ### 2026-06-04 — Phase 2.5: forum + deploy/UX fixes
 Per-case-file **Case Notes** thread (board-level posts + nested replies +
