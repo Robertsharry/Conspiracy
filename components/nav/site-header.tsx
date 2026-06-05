@@ -5,6 +5,7 @@ const NAV = [
   { href: "/", label: "Dispatches" },
   { href: "/boards", label: "Case Files" },
   { href: "/wire", label: "The Wire" },
+  { href: "/inmail", label: "InMail" },
 ];
 
 /**
