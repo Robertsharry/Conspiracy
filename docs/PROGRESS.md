@@ -5,14 +5,25 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** Phase 2 — The Evidence Board
-- **Done:** Phase 0 · Phase 1 identity · Phase 2 schema + boards layer + canvas
-- **Branch:** `phase-2-evidence-board` (carries Phase 0+1; PR reconciles `main`)
-- **DB:** `profiles` applied. **New migrations (boards/nodes/edges/posts/votes/tags) need `supabase db push`** to bring the board to life.
+- **Current phase:** Phase 2 → 2.5 (Community)
+- **Done:** Phase 0 · Phase 1 identity · Phase 2 board engine + inspector/votes · forum
+- **Branch:** `phase-2-evidence-board` (PR #3 → main). **All migrations applied & verified live.**
+- **Live locally:** auth, dossier, boards, canvas (pins + red string), inspector, votes, forum.
+- **Prod (`redthread.red`):** needs Vercel env vars set + PR #3 merged to `main`.
 
 ---
 
 ## Log (newest first)
+
+### 2026-06-04 — Phase 2.5: forum + deploy/UX fixes
+Per-case-file **Case Notes** thread (board-level posts + nested replies +
+Corroborate/Discredit), mounted under the board canvas; optimistic + anon-gated.
+Also: **deploy hardening** (proxy skips session refresh when Supabase env is
+absent, so a misconfigured Vercel target no longer 500s the whole site), legible
+**@xyflow controls/minimap** on the dark board, and stored NASA + Resend keys.
+User confirmed **signup works live** (Resend SMTP) and pushed **all migrations**.
+Roadmapped Phase 2.5 (forum ✓, profile media, InMail).
+**Next:** profile media + InMail; realtime; then the Canon.
 
 ### 2026-06-04 — Phase 2: board engine (schema + boards + canvas)
 Board/forum schema: `boards` (with plausibility/verdict/category/is_canon/

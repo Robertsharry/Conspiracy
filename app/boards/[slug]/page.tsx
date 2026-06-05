@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBoardBySlug, getBoardGraph } from "@/lib/data/boards";
+import { getBoardThread } from "@/lib/data/posts";
 import { getCurrentProfile } from "@/lib/data/profiles";
 import { BoardCanvasLoader } from "@/components/board/board-canvas-loader";
+import { CaseNotesThread } from "@/components/forum/case-notes-thread";
 import { PlausibilityMeter } from "@/components/redthread/plausibility-meter";
 import { TopSecretStamp } from "@/components/redthread/top-secret-stamp";
 
@@ -27,6 +29,7 @@ export default async function BoardPage({
 
   const me = await getCurrentProfile();
   const { nodes, edges } = await getBoardGraph(board.id);
+  const thread = await getBoardThread(board.id);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10">
@@ -85,6 +88,13 @@ export default async function BoardPage({
           ? "Drag a pin to reposition it. Drag from a pin's edge to another to draw the red string."
           : "Initiate to pin evidence and connect the dots."}
       </p>
+
+      <CaseNotesThread
+        boardId={board.id}
+        canPost={!!me}
+        meName={me?.shadow_name ?? null}
+        initialPosts={thread}
+      />
     </div>
   );
 }
