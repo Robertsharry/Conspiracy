@@ -38,11 +38,16 @@ export default async function BoardsPage() {
     getCurrentProfile(),
   ]);
 
-  // Canon comes back ranked (featured_rank, then plausibility); partition by
-  // category into the three wings.
-  const scientists = canon.filter((b) => b.category === "person");
-  const disappearances = canon.filter((b) => b.category === "disappearance");
-  const conspiracies = canon.filter(
+  // Canon comes back ranked (featured_rank, then plausibility). featured_rank 50+
+  // is the "Active Files" wing (modern/weird); everything else partitions by
+  // category.
+  const isActive = (b: BoardSummary) =>
+    b.featured_rank != null && b.featured_rank >= 50;
+  const active = canon.filter(isActive);
+  const rest = canon.filter((b) => !isActive(b));
+  const scientists = rest.filter((b) => b.category === "person");
+  const disappearances = rest.filter((b) => b.category === "disappearance");
+  const conspiracies = rest.filter(
     (b) => b.category !== "person" && b.category !== "disappearance",
   );
 
@@ -70,6 +75,11 @@ export default async function BoardsPage() {
         title="Missing Scientists"
         blurb="The ones who knew too much. Ranked — with dossiers and competing theories."
         boards={scientists}
+      />
+      <Section
+        title="Active Files"
+        blurb="Modern, open, and genuinely strange — the files still being written."
+        boards={active}
       />
       <Section
         title="Disappearances"
