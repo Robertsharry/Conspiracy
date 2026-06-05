@@ -27,7 +27,7 @@ Includes the board/forum data layer (was the deferred Phase 1 slice).
 - [ ] Board view = SSR dossier header + client `BoardCanvas` (`@xyflow/react`, `ssr:false`)
 - [ ] Custom pin nodes per type; red-string SVG edges; add-pin / draw-string; persisted x/y/rotation
 - [ ] PinInspector: node-level case-notes + Corroborate/Discredit (votes + credibility trigger)
-- [ ] Realtime: presence rail, live pins/strings/notes, live cursors / "drawing string"
+- [x] Realtime: presence rail + live pins/strings (live cursors / "drawing string" deferred → Phase 6)
 - [ ] `evidence` storage bucket + signed upload
 
 ## Phase 2.5 — Community & Comms  *(requested)*
@@ -58,6 +58,7 @@ Populate REDTHREAD with real, curated content — our editorial spine.
 - [ ] Research-backed for factual accuracy; everything framed as **collaborative speculation** per [SECURITY_AND_MODERATION.md](SECURITY_AND_MODERATION.md) (public/historical figures only, sourced, link-out not host).
 
 ## Phase 6 — Extras (later)
+- [ ] **Live cursors** — ghost cursors + "X is drawing a string" broadcast on the board (deferred from Phase 2 realtime; coordinate-mapping needs care).
 - [ ] **Tag / @mention operatives** — `@shadow_name` in case-notes/posts links to dossiers, with an optional InMail/notification ping. *(User: save for the end.)*
 - [ ] **Donate / "Fund the Operation"** — a themed contribution section that **links out** to a payment provider (Ko-fi / GitHub Sponsors / Stripe Payment Link — we never process payments ourselves). Tiered as clandestine financing ("burner phone" → "bankroll the operation"), with a **Benefactor** dossier flair + an anonymized "wall of patrons." Concept locked; provider TBD by user.
 

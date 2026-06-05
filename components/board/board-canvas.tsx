@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -21,7 +21,10 @@ import { PinNode, type PinNodeData } from "./pin-node";
 import { RedStringEdge } from "./red-string-edge";
 import { BoardToolbar } from "./board-toolbar";
 import { PinInspector, type SelectedPin } from "./pin-inspector";
+import { PresenceRail, type Watcher } from "./presence-rail";
 import { createNode, moveNode, createEdge } from "@/lib/actions/node-actions";
+import { createClient } from "@/lib/supabase/client";
+import { colorFor } from "@/lib/realtime/colors";
 import type { NodeRow, EdgeRow } from "@/lib/data/boards";
 
 const nodeTypes = { pin: PinNode };
@@ -30,12 +33,13 @@ const edgeTypes = { redstring: RedStringEdge };
 export type BoardCanvasProps = {
   boardId: string;
   canEdit: boolean;
+  me: { id: string; name: string; avatarUrl: string | null } | null;
   initialNodes: NodeRow[];
   initialEdges: EdgeRow[];
 };
 
-function toFlowNodes(rows: NodeRow[]): Node[] {
-  return rows.map((r) => ({
+function toFlowNode(r: NodeRow): Node {
+  return {
     id: r.id,
     type: "pin",
     position: { x: r.x, y: r.y },
@@ -46,39 +50,101 @@ function toFlowNodes(rows: NodeRow[]): Node[] {
       sourceUrl: r.source_url,
       score: r.score,
     },
-  }));
+  };
 }
 
-function toFlowEdges(rows: EdgeRow[]): Edge[] {
-  return rows.map((r) => ({
+function toFlowEdge(r: EdgeRow): Edge {
+  return {
     id: r.id,
     source: r.source_node_id,
     target: r.target_node_id,
     type: "redstring",
     data: { label: r.label, kind: r.kind },
-  }));
+  };
 }
 
 const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`;
 
-function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(toFlowNodes(initialNodes));
-  const [edges, setEdges, onEdgesChange] = useEdgesState(toFlowEdges(initialEdges));
+function Canvas({ boardId, canEdit, me, initialNodes, initialEdges }: BoardCanvasProps) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes.map(toFlowNode));
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges.map(toFlowEdge));
   const [selected, setSelected] = useState<SelectedPin | null>(null);
+  const [watchers, setWatchers] = useState<Watcher[]>([]);
 
-  // Draw the red string: optimistic add, then persist (reconcile/rollback by id).
+  const meId = me?.id ?? null;
+  const meName = me?.name ?? null;
+  const meAvatar = me?.avatarUrl ?? null;
+
+  // ── Realtime: presence ("who's watching this case") ──────────────────────
+  useEffect(() => {
+    if (!meId || !meName) return;
+    const supabase = createClient();
+    const color = colorFor(meId);
+    const channel = supabase.channel(`board:${boardId}:presence`, {
+      config: { presence: { key: meId } },
+    });
+    channel
+      .on("presence", { event: "sync" }, () => {
+        const state = channel.presenceState() as unknown as Record<string, Watcher[]>;
+        const list: Watcher[] = [];
+        for (const key of Object.keys(state)) {
+          const meta = state[key]?.[0];
+          if (meta) list.push(meta);
+        }
+        setWatchers(list);
+      })
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          void channel.track({ id: meId, name: meName, avatarUrl: meAvatar, color });
+        }
+      });
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [boardId, meId, meName, meAvatar]);
+
+  // ── Realtime: live pins + strings from other operatives ──────────────────
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`board:${boardId}:changes`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "nodes", filter: `board_id=eq.${boardId}` },
+        (payload) => {
+          const r = payload.new as unknown as NodeRow;
+          setNodes((nds) => (nds.some((n) => n.id === r.id) ? nds : [...nds, toFlowNode(r)]));
+        },
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "edges", filter: `board_id=eq.${boardId}` },
+        (payload) => {
+          const r = payload.new as unknown as EdgeRow;
+          setEdges((eds) => (eds.some((e) => e.id === r.id) ? eds : [...eds, toFlowEdge(r)]));
+        },
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [boardId, setNodes, setEdges]);
+
+  // Draw the red string: optimistic add, then persist (dedupe vs realtime echo).
   const onConnect = useCallback(
     async (c: Connection) => {
       if (!canEdit || !c.source || !c.target || c.source === c.target) return;
       const source = c.source;
       const target = c.target;
       const id = tempId();
-      setEdges((eds) =>
-        addEdge({ id, source, target, type: "redstring", data: {} }, eds),
-      );
+      setEdges((eds) => addEdge({ id, source, target, type: "redstring", data: {} }, eds));
       const res = await createEdge({ boardId, source, target });
       if ("id" in res) {
-        setEdges((eds) => eds.map((e) => (e.id === id ? { ...e, id: res.id } : e)));
+        setEdges((eds) =>
+          eds
+            .filter((e) => e.id !== res.id)
+            .map((e) => (e.id === id ? { ...e, id: res.id } : e)),
+        );
       } else {
         setEdges((eds) => eds.filter((e) => e.id !== id));
       }
@@ -101,7 +167,11 @@ function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasPro
       setNodes((nds) => [...nds, { id, type: "pin", position, data: { type, title } }]);
       const res = await createNode({ boardId, type, title, x: position.x, y: position.y });
       if ("id" in res) {
-        setNodes((nds) => nds.map((n) => (n.id === id ? { ...n, id: res.id } : n)));
+        setNodes((nds) =>
+          nds
+            .filter((n) => n.id !== res.id)
+            .map((n) => (n.id === id ? { ...n, id: res.id } : n)),
+        );
       } else {
         setNodes((nds) => nds.filter((n) => n.id !== id));
       }
@@ -148,6 +218,7 @@ function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasPro
       </ReactFlow>
 
       {canEdit && <BoardToolbar onAddPin={onAddPin} />}
+      <PresenceRail watchers={watchers} />
 
       {selected && (
         <PinInspector
@@ -169,7 +240,7 @@ function Canvas({ boardId, canEdit, initialNodes, initialEdges }: BoardCanvasPro
   );
 }
 
-/** Public canvas — wrapped in a provider so future xyflow hooks have context. */
+/** Public canvas — wrapped in a provider so xyflow hooks have context. */
 export function BoardCanvas(props: BoardCanvasProps) {
   return (
     <ReactFlowProvider>

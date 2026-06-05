@@ -79,6 +79,7 @@ export default async function BoardPage({
       <BoardCanvasLoader
         boardId={board.id}
         canEdit={!!me}
+        me={me ? { id: me.id, name: me.shadow_name, avatarUrl: me.avatar_url } : null}
         initialNodes={nodes}
         initialEdges={edges}
       />
