@@ -30,6 +30,11 @@ Includes the board/forum data layer (was the deferred Phase 1 slice).
 - [ ] Realtime: presence rail, live pins/strings/notes, live cursors / "drawing string"
 - [ ] `evidence` storage bucket + signed upload
 
+## Phase 2.5 — Community & Comms  *(requested)*
+- [ ] **Forum / message board** — board-level case-notes thread (composer + nested replies + Corroborate/Discredit on posts); a "war room" discussion per case file.
+- [ ] **Profile media** — avatar/banner upload (images + **small** gifs, size-capped) to a Supabase `avatars` bucket; shown on dossier, posts, presence.
+- [ ] **InMail** — discreet, async **1:1** messages (NOT live chat). `messages` table + RLS; a quiet inbox ("dead drops"), compose-to-shadow-name, read receipts. Intentionally understated, email-like.
+
 ## Phase 3 — The Wire
 - [ ] Wire dashboard (Quakes/Flights/Events tabs)
 - [ ] Route-handler proxies (USGS/OpenSky/GDELT) + caching + degraded states
