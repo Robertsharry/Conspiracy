@@ -4,18 +4,40 @@ import { SUPPORTER_TIERS } from "@/lib/supporters";
 import { PaperPanel } from "@/components/redthread/paper-panel";
 import { TopSecretStamp } from "@/components/redthread/top-secret-stamp";
 import { BenefactorMark } from "@/components/redthread/benefactor-mark";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { DonateButton } from "@/components/redthread/donate-button";
 
 export const metadata: Metadata = { title: "The Black Budget" };
 
-const DONATE_URL = process.env.NEXT_PUBLIC_DONATE_URL;
-
-export default async function DonatePage() {
+export default async function DonatePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status } = await searchParams;
   const patrons = await getPatrons();
 
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-12">
+      {status === "success" && (
+        <div className="mb-8 rounded-sm border border-ochre/40 bg-ochre/10 px-4 py-3">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-ochre">
+            Channel received
+          </p>
+          <p className="mt-1 font-mono text-sm text-foreground">
+            The file remembers. If you were signed in, your Benefactor mark is
+            being struck onto your dossier. Welcome to the inner circle.
+          </p>
+        </div>
+      )}
+      {status === "cancelled" && (
+        <div className="mb-8 rounded-sm border border-border px-4 py-3">
+          <p className="font-mono text-sm text-muted-foreground">
+            Channel closed — nothing was taken. The door stays open if you change
+            your mind.
+          </p>
+        </div>
+      )}
+
       {/* Hero */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -75,28 +97,12 @@ export default async function DonatePage() {
 
       {/* CTA */}
       <div className="mt-10 flex flex-col items-center gap-3 text-center">
-        {DONATE_URL ? (
-          <a
-            href={DONATE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              buttonVariants({ size: "lg" }),
-              "h-11 px-8 font-mono text-sm uppercase tracking-wider",
-            )}
-          >
-            Fund the operation ↗
-          </a>
-        ) : (
-          <span className="rounded-sm border border-border px-4 py-2 font-mono text-xs uppercase tracking-wider text-muted-foreground">
-            Channel opening soon — stand by
-          </span>
-        )}
+        <DonateButton />
         <p className="max-w-md font-mono text-[11px] leading-relaxed text-muted-foreground">
-          We link out to a real processor. REDTHREAD never sees your card. Shadow
-          your name even here if you like. Once you&apos;ve given, send{" "}
-          <span className="text-redthread">Kairos</span> an InMail and your mark
-          goes up on the wall.
+          Pay what it&apos;s worth to you — you set the amount. Payments run
+          through Stripe; REDTHREAD never sees your card. Sign in first and your{" "}
+          <span className="text-ochre">Benefactor</span> mark is struck
+          automatically once the payment clears.
         </p>
       </div>
 
