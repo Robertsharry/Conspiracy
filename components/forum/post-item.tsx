@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CorroborateBar } from "@/components/redthread/corroborate-bar";
 import { FlagButton } from "@/components/redthread/flag-button";
+import { MentionedText } from "@/components/redthread/mentioned-text";
 import { PostComposer } from "./post-composer";
 import type { ThreadPost } from "@/lib/data/posts";
 import { cn } from "@/lib/utils";
@@ -58,7 +59,7 @@ export function PostItem({
           />
         </div>
         <p className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">
-          {node.body}
+          <MentionedText text={node.body} />
         </p>
         <div className="mt-2 flex items-center gap-3">
           {canPost && (

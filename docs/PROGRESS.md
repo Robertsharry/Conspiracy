@@ -5,11 +5,31 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** ALL of the user's 1–5 list done (Phase 5 Canon seeded). Backlog = Phase 6 extras.
-- **Done:** Phase 0 · Phase 1 · Phase 2 (board+inspector+votes+realtime) · Phase 2.5 (forum, InMail, profile media) · dossier wired+reachable · **Phase 5 Canon (seeded)**
-- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#8 merged.
-- **DB:** new migrations (`messages`, `avatars`, `realtime`, `canon_seed`) apply on merge / `supabase db push`. **Canon needs `db push` to populate.**
+- **Current phase:** Phase 4 polish (search, moderation, themed errors) + **@mentions/Intercepts** done. Remaining: **The Wire** (Phase 3 live data).
+- **Done:** Phase 0 · Phase 1 · Phase 2 (board+inspector+votes+realtime) · Phase 2.5 (forum, InMail, profile media) · dossier · **Phase 5 Canon** · Donate (Black Budget) · **loading states everywhere** · **Phase 4** (full-text search, flag-for-review + moderation queue, themed 404/error) · **@mention/tag + Intercepts (notifications)**
+- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#15 merged.
+- **DB:** apply on merge / `supabase db push` — recent: `supporters`, `roanoke_solved`, `active_files_seed`, `cicada_reframe`, `search`, `reports`, `notifications`. **Canon + these need `db push`.**
 - **Prod (`redthread.red`):** needs Vercel env vars set; then it tracks `main`.
+
+---
+
+### 2026-06-04 — @mention / tag + Intercepts
+`notifications` table written **only** by a SECURITY DEFINER trigger that parses
+`@shadow_name` mentions and reply-targets on every new post (no client insert →
+unforgeable; RLS lets you read/mark-read only your own). `MentionTextarea` adds
+**@ autocomplete** (operative search) to the case-note composer; `MentionedText`
+renders handles as dossier links. Header **bell** (lucide) shows the unread count
+for signed-in operatives → **`/pings`** ("Intercepts"), with mark-all-read and a
+Decrypting loader. **Verify:** anon `/pings` redirects to initiation (confirmed);
+build green. Needs `db push` + login to exercise the trigger.
+
+### 2026-06-04 — Phase 4: search + moderation + themed errors
+**Full-text search** (`search_tsv` generated tsvector + GIN on boards & nodes;
+`searchArchive` via `websearch` tsquery, RLS-scoped) at **`/search`** with a header
+icon. **Flag-for-review**: `reports` table (insert-only RLS, service-role triage),
+`fileReport` action + `FlagButton` on boards and case-notes. Themed **404**
+(EXPUNGED stamp) and **error** ("Signal Lost", retry) pages. All verified
+in-browser; build green. (PRs #14, #15.)
 
 ---
 

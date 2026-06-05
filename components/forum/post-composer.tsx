@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { createPost } from "@/lib/actions/post-actions";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "@/components/redthread/mention-textarea";
 import type { ThreadPost } from "@/lib/data/posts";
 
 /**
@@ -54,11 +54,12 @@ export function PostComposer({
 
   return (
     <div className="space-y-2">
-      <Textarea
+      <MentionTextarea
         value={body}
-        onChange={(e) => setBody(e.target.value)}
+        onChange={setBody}
+        onEnter={submit}
         rows={compact ? 2 : 3}
-        placeholder={placeholder ?? "File a case-note…"}
+        placeholder={placeholder ?? "File a case-note…  (@ to tag an operative)"}
         className="font-mono text-xs"
       />
       <div className="flex items-center gap-3">
