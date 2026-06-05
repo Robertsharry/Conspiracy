@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { AuthStatus } from "@/components/nav/auth-status";
 
 const NAV = [
@@ -35,6 +36,13 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <Link
+            href="/search"
+            aria-label="Search the archive"
+            className="rounded-sm p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <Search className="size-4" />
+          </Link>
           <AuthStatus />
         </nav>
       </div>
