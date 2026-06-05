@@ -89,3 +89,26 @@ export async function updateAvatar(
   revalidatePath("/", "layout");
   return { ok: true };
 }
+
+/** Write the operative's "field notes" (profile bio). */
+export async function updateBio(
+  bio: string,
+): Promise<{ ok: true } | { error: string }> {
+  if (bio.length > 1000) {
+    return { error: "Keep field notes under 1000 characters." };
+  }
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Initiate first." };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ bio: bio.trim() || null })
+    .eq("id", user.id);
+  if (error) return { error: error.message };
+
+  revalidatePath("/", "layout");
+  return { ok: true };
+}

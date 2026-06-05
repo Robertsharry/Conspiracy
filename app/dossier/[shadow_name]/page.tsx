@@ -10,7 +10,10 @@ import { RedactedText } from "@/components/redthread/redacted-text";
 import { Avatar } from "@/components/redthread/avatar";
 import { AvatarUploader } from "@/components/profile/avatar-uploader";
 import { ButtonLink } from "@/components/ui/button-link";
+import { BioEditor } from "@/components/profile/bio-editor";
+import { getBoardsByCreator, getRecentActivity } from "@/lib/data/dossier";
 import { nextRank } from "@/lib/ranks";
+import Link from "next/link";
 
 export async function generateMetadata({
   params,
@@ -34,6 +37,10 @@ export default async function DossierPage({
 
   const me = await getCurrentProfile();
   const isMe = me?.id === profile.id;
+  const [boards, activity] = await Promise.all([
+    getBoardsByCreator(profile.id),
+    getRecentActivity(profile.id),
+  ]);
   const upcoming = nextRank(profile.credibility);
   const joined = new Date(profile.created_at).toLocaleDateString("en-US", {
     year: "numeric",
@@ -103,8 +110,10 @@ export default async function DossierPage({
           <h2 className="mb-3 font-typewriter text-lg uppercase text-ink">
             Field Notes
           </h2>
-          {profile.bio ? (
-            <p className="font-mono text-xs leading-relaxed text-paper-foreground/85">
+          {isMe ? (
+            <BioEditor initial={profile.bio} />
+          ) : profile.bio ? (
+            <p className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-paper-foreground/85">
               {profile.bio}
             </p>
           ) : (
@@ -119,9 +128,30 @@ export default async function DossierPage({
           <h2 className="mb-3 font-typewriter text-lg uppercase text-ink">
             Case Files Opened
           </h2>
-          <p className="font-mono text-xs leading-relaxed text-paper-foreground/70">
-            No case files yet. {isMe ? "Open one — someone has to go first." : "This operative hasn't surfaced a board."}
-          </p>
+          {boards.length ? (
+            <ul className="space-y-2">
+              {boards.map((b) => (
+                <li key={b.id}>
+                  <Link
+                    href={`/boards/${b.slug}`}
+                    className="flex items-center justify-between gap-3 rounded-sm border border-ink/15 px-2.5 py-2 transition-colors hover:bg-ink/5"
+                  >
+                    <span className="truncate font-typewriter text-sm text-ink">
+                      {b.title}
+                    </span>
+                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-widest text-ink-faded">
+                      {b.category} · {b.node_count} pins
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="font-mono text-xs leading-relaxed text-paper-foreground/70">
+              No case files yet.{" "}
+              {isMe ? "Open one — someone has to go first." : "This operative hasn't surfaced a board."}
+            </p>
+          )}
         </PaperPanel>
       </div>
 
@@ -129,10 +159,35 @@ export default async function DossierPage({
         <h2 className="mb-3 font-typewriter text-lg uppercase text-ink">
           Recent Activity
         </h2>
-        <p className="font-mono text-xs leading-relaxed text-paper-foreground/70">
-          The trail is cold for now. Pins, strings, and case-notes will appear
-          here as this operative works the wall.
-        </p>
+        {activity.length ? (
+          <ul className="space-y-2">
+            {activity.map((a, i) => (
+              <li
+                key={i}
+                className="border-b border-ink/10 pb-2 font-mono text-xs leading-relaxed last:border-0"
+              >
+                <span className="text-ink-faded">
+                  {a.kind === "pin" ? "pinned a lead on " : "filed a note on "}
+                </span>
+                <Link
+                  href={`/boards/${a.boardSlug}`}
+                  className="text-ink underline-offset-2 hover:underline"
+                >
+                  {a.boardTitle}
+                </Link>
+                <span className="text-paper-foreground/70">
+                  {" "}
+                  — {a.snippet.length > 90 ? `${a.snippet.slice(0, 90)}…` : a.snippet}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="font-mono text-xs leading-relaxed text-paper-foreground/70">
+            The trail is cold for now. Pins, strings, and case-notes will appear
+            here as this operative works the wall.
+          </p>
+        )}
       </PaperPanel>
     </div>
   );
