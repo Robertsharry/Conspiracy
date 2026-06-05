@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { getCurrentProfile, isUnclaimed } from "@/lib/data/profiles";
+import { Avatar } from "@/components/redthread/avatar";
 import { ButtonLink } from "@/components/ui/button-link";
 import { signOut } from "@/lib/actions/profile-actions";
 
 /**
- * Header auth state. Shows the operative's shadow name (linking to their
- * dossier) with a quiet "exit", or an Initiate button when signed out.
- * Async Server Component — reads the session per request.
+ * Header auth state. Signed in → avatar + shadow name linking to the operative's
+ * dossier, with a quiet "exit". Signed out → an Initiate button. Async Server
+ * Component; reads the session per request.
  */
 export async function AuthStatus() {
   const profile = await getCurrentProfile();
@@ -23,23 +24,36 @@ export async function AuthStatus() {
     );
   }
 
-  // Signed in but hasn't picked a handle yet — nudge them to finish.
-  const label = isUnclaimed(profile) ? "claim your name" : profile.shadow_name;
+  // Signed in but hasn't claimed a handle yet — nudge them to finish.
+  if (isUnclaimed(profile)) {
+    return (
+      <ButtonLink
+        href="/initiation"
+        size="sm"
+        className="ml-2 font-mono text-xs uppercase tracking-wider"
+      >
+        Claim your name
+      </ButtonLink>
+    );
+  }
 
   return (
     <div className="ml-2 flex items-center gap-2">
       <Link
-        href={isUnclaimed(profile) ? "/initiation" : `/dossier/${profile.shadow_name}`}
-        className="max-w-[12ch] truncate font-mono text-xs uppercase tracking-wider text-foreground transition-colors hover:text-redthread"
-        title={label}
+        href={`/dossier/${profile.shadow_name}`}
+        title="Your dossier"
+        className="flex items-center gap-2 rounded-sm px-1 py-0.5 transition-colors hover:bg-accent"
       >
-        {label}
+        <Avatar url={profile.avatar_url} name={profile.shadow_name} size={24} />
+        <span className="hidden max-w-[14ch] truncate font-mono text-xs uppercase tracking-wider text-foreground sm:inline">
+          {profile.shadow_name}
+        </span>
       </Link>
       <form action={signOut}>
         <button
           type="submit"
-          className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
           title="Sign out"
+          className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
         >
           exit
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { CorroborateBar } from "@/components/redthread/corroborate-bar";
 import { createPost } from "@/lib/actions/post-actions";
@@ -179,8 +180,17 @@ export function PinInspector({
           <ul className="space-y-3">
             {notes.map((n) => (
               <li key={n.id} className="rounded-sm border border-border bg-background/50 p-2">
-                <div className="mb-1 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-                  {n.author_name ?? "redacted"}
+                <div className="mb-1 font-mono text-[9px] uppercase tracking-widest">
+                  {n.author_name ? (
+                    <Link
+                      href={`/dossier/${n.author_name}`}
+                      className="text-muted-foreground hover:text-foreground hover:underline"
+                    >
+                      {n.author_name}
+                    </Link>
+                  ) : (
+                    <span className="text-muted-foreground">redacted</span>
+                  )}
                 </div>
                 <p className="whitespace-pre-wrap font-mono text-xs text-foreground">
                   {n.body}
