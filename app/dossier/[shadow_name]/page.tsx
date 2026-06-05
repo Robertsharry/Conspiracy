@@ -12,6 +12,8 @@ import { AvatarUploader } from "@/components/profile/avatar-uploader";
 import { ButtonLink } from "@/components/ui/button-link";
 import { BioEditor } from "@/components/profile/bio-editor";
 import { getBoardsByCreator, getRecentActivity } from "@/lib/data/dossier";
+import { getSupporterTier } from "@/lib/data/supporters";
+import { BenefactorMark } from "@/components/redthread/benefactor-mark";
 import { nextRank } from "@/lib/ranks";
 import Link from "next/link";
 
@@ -37,9 +39,10 @@ export default async function DossierPage({
 
   const me = await getCurrentProfile();
   const isMe = me?.id === profile.id;
-  const [boards, activity] = await Promise.all([
+  const [boards, activity, supporterTier] = await Promise.all([
     getBoardsByCreator(profile.id),
     getRecentActivity(profile.id),
+    getSupporterTier(profile.id),
   ]);
   const upcoming = nextRank(profile.credibility);
   const joined = new Date(profile.created_at).toLocaleDateString("en-US", {
@@ -88,6 +91,7 @@ export default async function DossierPage({
       )}
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <RankBadge credibility={profile.credibility} />
+        <BenefactorMark tier={supporterTier} />
         <span className="font-mono text-xs text-muted-foreground">
           credibility {profile.credibility}
         </span>
