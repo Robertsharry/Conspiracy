@@ -5,15 +5,26 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** Phase 2.5 complete → next: Realtime, then The Canon
-- **Done:** Phase 0 · Phase 1 · Phase 2 (board + inspector + votes) · Phase 2.5 (forum, InMail, profile media)
-- **Workflow:** feature branch → commit → PR → **merge to `main`** (per user). PRs #3, #4 merged.
-- **DB:** profiles/boards/etc live; new migrations (`messages`, `avatars`) apply on merge (Supabase GitHub app) or `supabase db push`.
+- **Current phase:** Phase 2 fully done (incl. realtime) → next: **The Canon** (Phase 5)
+- **Done:** Phase 0 · Phase 1 · Phase 2 (board + inspector + votes + realtime) · Phase 2.5 (forum, InMail, profile media) · dossier wired + reachable
+- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#7 merged.
+- **DB:** new migrations (`messages`, `avatars`, `realtime`) apply on merge / `supabase db push`.
 - **Prod (`redthread.red`):** needs Vercel env vars set; then it tracks `main`.
 
 ---
 
 ## Log (newest first)
+
+### 2026-06-04 — Phase 2 realtime + dossier reachable
+**Realtime board:** `nodes/edges/posts` added to the `supabase_realtime` publication;
+per-board **presence rail** (who's watching, color-ringed avatars) + **live pins/
+strings** via `postgres_changes` INSERT (optimistic adds dedupe vs the realtime
+echo); `colorFor(id)` presence colors. **Cursors deferred** (fragile coord-mapping;
+follow-up). **Dossier reachable:** header `AuthStatus` chip (avatar + shadow name →
+dossier + exit) restored/upgraded; author names link to dossiers across forum + pin
+notes. Earlier this session also: forum, InMail, profile media, and the dossier
+panels wired to live data — all merged.
+**Next:** The Canon (ranked conspiracies; missing scientists at the top).
 
 ### 2026-06-04 — Phase 2.5 complete: InMail + profile media
 **InMail** (PR #4): `messages` + RLS (parties read / sender writes / recipient
