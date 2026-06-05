@@ -7,6 +7,7 @@ import { BoardCanvasLoader } from "@/components/board/board-canvas-loader";
 import { CaseNotesThread } from "@/components/forum/case-notes-thread";
 import { PlausibilityMeter } from "@/components/redthread/plausibility-meter";
 import { TopSecretStamp } from "@/components/redthread/top-secret-stamp";
+import { FlagButton } from "@/components/redthread/flag-button";
 
 export async function generateMetadata({
   params,
@@ -65,12 +66,15 @@ export default async function BoardPage({
             </p>
           )}
         </div>
-        {board.status !== "open" && (
-          <TopSecretStamp
-            variant={board.status === "cold" ? "cold-case" : "confidential"}
-            rotate={-6}
-          />
-        )}
+        <div className="flex flex-col items-end gap-3">
+          {board.status !== "open" && (
+            <TopSecretStamp
+              variant={board.status === "cold" ? "cold-case" : "confidential"}
+              rotate={-6}
+            />
+          )}
+          <FlagButton targetType="board" targetId={board.id} />
+        </div>
       </div>
 
       <div className="thread-rule my-6 h-px" />
