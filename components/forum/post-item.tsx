@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CorroborateBar } from "@/components/redthread/corroborate-bar";
+import { FlagButton } from "@/components/redthread/flag-button";
 import { PostComposer } from "./post-composer";
 import type { ThreadPost } from "@/lib/data/posts";
 import { cn } from "@/lib/utils";
@@ -59,15 +60,18 @@ export function PostItem({
         <p className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground">
           {node.body}
         </p>
-        {canPost && (
-          <button
-            type="button"
-            onClick={() => setReplying((v) => !v)}
-            className="mt-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
-          >
-            {replying ? "cancel" : "reply"}
-          </button>
-        )}
+        <div className="mt-2 flex items-center gap-3">
+          {canPost && (
+            <button
+              type="button"
+              onClick={() => setReplying((v) => !v)}
+              className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {replying ? "cancel" : "reply"}
+            </button>
+          )}
+          <FlagButton targetType="post" targetId={node.id} />
+        </div>
         {replying && (
           <div className="mt-2">
             <PostComposer

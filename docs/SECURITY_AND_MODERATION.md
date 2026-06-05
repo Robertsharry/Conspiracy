@@ -47,10 +47,15 @@ footer. The theme is theatrical; the harm is real if we're careless.
 
 ## Moderation flow
 
-- **Flag for review** on any board/pin/string/note → `reports` queue.
+- **Flag for review** on any board/pin/string/note → `reports` queue. Shipped: a
+  `FlagButton` (inline reason picker) calls the `fileReport` server action, which
+  inserts into `public.reports`. RLS is **insert-only for authed users** (`reporter_id
+  = (select auth.uid())`); there is **no select policy**, so the queue is readable
+  only by the service role — triage never leaks to clients.
 - Soft-delete / **redact** (never silent hard-delete) — content shows as ████ and
   is preserved for audit (and the lore: nothing is truly gone). v1 moderation runs
-  through service-role server actions; v2 adds an `is_moderator()` claim.
+  through service-role server actions; the admin triage view + redact actions are the
+  next slice; v2 adds an `is_moderator()` claim.
 - New-account rate limits on posting to blunt spam/brigading.
 - Clearance rank is flavor — **never** a shield against moderation.
 
