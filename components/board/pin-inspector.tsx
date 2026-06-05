@@ -8,6 +8,7 @@ import { createPost } from "@/lib/actions/post-actions";
 import type { MyVote } from "@/lib/actions/vote-actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { InlineLoading } from "@/components/redthread/inline-loading";
 import type { PinNodeData } from "./pin-node";
 
 export type SelectedPin = { id: string; data: PinNodeData };
@@ -175,7 +176,7 @@ export function PinInspector({
           Case notes
         </h4>
         {loading ? (
-          <p className="font-mono text-xs text-muted-foreground">decrypting…</p>
+          <InlineLoading label="decrypting notes…" />
         ) : notes.length ? (
           <ul className="space-y-3">
             {notes.map((n) => (
