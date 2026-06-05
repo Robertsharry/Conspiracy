@@ -10,6 +10,7 @@ export interface BoardSummary {
   is_canon: boolean;
   plausibility: number | null;
   verdict: string | null;
+  featured_rank: number | null;
   node_count: number;
   post_count: number;
   watcher_count: number;
@@ -50,7 +51,7 @@ export interface EdgeRow {
 }
 
 const SUMMARY_COLS =
-  "id, slug, title, summary, category, status, is_canon, plausibility, verdict, node_count, post_count, watcher_count, created_at";
+  "id, slug, title, summary, category, status, is_canon, plausibility, verdict, featured_rank, node_count, post_count, watcher_count, created_at";
 
 /** Canon case files, ordered by OUR plausibility (then manual featured rank). */
 export async function listCanonRanked(limit = 60): Promise<BoardSummary[]> {
