@@ -1,0 +1,44 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="REDTHREAD">
+  <title>REDTHREAD</title>
+  <defs>
+    <radialGradient id="tile" cx="0.34" cy="0.28" r="0.95">
+      <stop offset="0" stop-color="#241f19"/>
+      <stop offset="1" stop-color="#141110"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.58" cy="0.64" r="0.5">
+      <stop offset="0" stop-color="#EA4A2E" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#EA4A2E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="thread" cx="0.58" cy="0.64" r="0.62" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#F4583B"/>
+      <stop offset="0.55" stop-color="#C62B20"/>
+      <stop offset="1" stop-color="#A52016"/>
+    </radialGradient>
+  </defs>
+
+  <!-- tile -->
+  <rect x="20" y="20" width="472" height="472" rx="116" fill="url(#tile)"/>
+  <rect x="20.75" y="20.75" width="470.5" height="470.5" rx="115.25" fill="none" stroke="#3c322a" stroke-width="1.5"/>
+
+  <!-- faint signal glow under the core -->
+  <circle cx="298" cy="330" r="210" fill="url(#glow)"/>
+
+  <!-- the red thread, spiralling inward to the pin, one loose end -->
+  <g transform="translate(256 256) scale(1.075) translate(-256 -256)">
+    <path d="M96 132
+             C 250 96, 420 198, 406 306
+             C 396 400, 266 434, 204 374
+             C 154 326, 194 254, 262 266
+             C 308 274, 316 324, 288 346"
+          fill="none" stroke="url(#thread)" stroke-width="37" stroke-linecap="round"/>
+    <!-- sheen along the upper run of the thread -->
+    <path d="M120 128 C 252 100, 396 188, 402 286"
+          fill="none" stroke="#FF8E74" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+    <!-- the pin at the core -->
+    <circle cx="288" cy="346" r="31" fill="#F4583B"/>
+    <circle cx="278" cy="336" r="9.5" fill="#FFD2C4" opacity="0.9"/>
+    <!-- the loose end you pull -->
+    <circle cx="96" cy="132" r="20.5" fill="#C62B20"/>
+    <circle cx="90" cy="126" r="6.5" fill="#FF9C82" opacity="0.85"/>
+  </g>
+</svg>
