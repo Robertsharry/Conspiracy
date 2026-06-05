@@ -49,9 +49,9 @@ Includes the board/forum data layer (was the deferred Phase 1 slice).
 - [ ] Accessibility + reduced-motion pass; OG images; themed error/not-found
 - [ ] Performance pass (`EXPLAIN ANALYZE`, index check)
 
-## Phase 5 — Saturation / The Canon  *(needs Phase 2 engine)*
+## Phase 5 — Saturation / The Canon  ✅ *(seeded; expandable)*
 Populate REDTHREAD with real, curated content — our editorial spine.
-- [ ] **Plausibility model** — every canon case file carries OUR rating (0–100) + a one-line **verdict**, sortable into a ranked archive.
+- [x] **Plausibility model** — every canon case file carries OUR rating (0–100) + a one-line **verdict**, sortable into a ranked archive.
 - [ ] **Missing Scientists wing** *(top of the canon)* — dossiers for notable disappeared/mysteriously-dead scientists, each a board with a person pin, biographical facts (sourced), and competing **theory** pins wired with red string. Ranked at the very top.
 - [ ] **Disappearances wing** — case files for famous vanishings (people, vessels, expeditions).
 - [ ] **The ranked conspiracy canon** — notable conspiracies across domains, each weighed by plausibility with a verdict; the flagship "ranked by us" archive view.
