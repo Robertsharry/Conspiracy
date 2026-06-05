@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ButtonLink } from "@/components/ui/button-link";
+import { AuthStatus } from "@/components/nav/auth-status";
 
 const NAV = [
   { href: "/", label: "Dispatches" },
@@ -34,13 +34,7 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <ButtonLink
-            href="/initiation"
-            size="sm"
-            className="ml-2 font-mono text-xs uppercase tracking-wider"
-          >
-            Initiate
-          </ButtonLink>
+          <AuthStatus />
         </nav>
       </div>
       <div className="thread-rule" />

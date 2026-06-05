@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CorroborateBar } from "@/components/redthread/corroborate-bar";
 import { PostComposer } from "./post-composer";
 import type { ThreadPost } from "@/lib/data/posts";
@@ -36,9 +37,18 @@ export function PostItem({
     <div className={cn(depth > 0 && "border-l border-border/60 pl-3")}>
       <div className="rounded-sm border border-border bg-card/50 p-3">
         <div className="mb-1 flex items-center justify-between gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-redthread">
-            {node.author_name ?? "redacted"}
-          </span>
+          {node.author_name ? (
+            <Link
+              href={`/dossier/${node.author_name}`}
+              className="font-mono text-[10px] uppercase tracking-widest text-redthread hover:underline"
+            >
+              {node.author_name}
+            </Link>
+          ) : (
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              redacted
+            </span>
+          )}
           <CorroborateBar
             targetType="post"
             targetId={node.id}
