@@ -5,11 +5,26 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** Phase 2 fully done (incl. realtime) → next: **The Canon** (Phase 5)
-- **Done:** Phase 0 · Phase 1 · Phase 2 (board + inspector + votes + realtime) · Phase 2.5 (forum, InMail, profile media) · dossier wired + reachable
-- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#7 merged.
-- **DB:** new migrations (`messages`, `avatars`, `realtime`) apply on merge / `supabase db push`.
+- **Current phase:** ALL of the user's 1–5 list done (Phase 5 Canon seeded). Backlog = Phase 6 extras.
+- **Done:** Phase 0 · Phase 1 · Phase 2 (board+inspector+votes+realtime) · Phase 2.5 (forum, InMail, profile media) · dossier wired+reachable · **Phase 5 Canon (seeded)**
+- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#8 merged.
+- **DB:** new migrations (`messages`, `avatars`, `realtime`, `canon_seed`) apply on merge / `supabase db push`. **Canon needs `db push` to populate.**
 - **Prod (`redthread.red`):** needs Vercel env vars set; then it tracks `main`.
+
+---
+
+### 2026-06-04 — Phase 5: The Canon (seeded)
+Research-backed `canon_seed` migration: **21 curated case files** (`is_canon`,
+`created_by=null`), each with our **plausibility** rating + dry **verdict**.
+**Missing Scientists** (Olson/Bull/Kelly/Diesel) fully built — person/event/theory
+pins wired with **red string**, featured at the top. **Disappearances** wing
+(Cooper, Mary Celeste, Roanoke, Earhart, Flight 19). **Conspiracies ranked by
+plausibility** (MKUltra/COINTELPRO/Tuskegee/Northwoods = 100 → moon-hoax = 2),
+documented-fact-vs-labeled-speculation. Two solved homicides on the popular "dead
+scientists" list **excluded** (real living families). Boards archive now sectioned
+(Missing Scientists / Disappearances / The Canon / Recent). Sourced via a research
+pass (Wikipedia/Britannica/CDC/NSA/FBI/NOAA/etc.).
+**Verify:** `supabase db push`, then `/boards` shows the populated, ranked archive.
 
 ---
 

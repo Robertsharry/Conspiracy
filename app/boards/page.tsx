@@ -1,10 +1,35 @@
 import type { Metadata } from "next";
-import { listCanonRanked, listRecentBoards } from "@/lib/data/boards";
+import { listCanonRanked, listRecentBoards, type BoardSummary } from "@/lib/data/boards";
 import { getCurrentProfile } from "@/lib/data/profiles";
 import { CaseFileCard } from "@/components/redthread/case-file-card";
 import { ButtonLink } from "@/components/ui/button-link";
 
 export const metadata: Metadata = { title: "Case Files" };
+
+function Section({
+  title,
+  blurb,
+  boards,
+  flip = false,
+}: {
+  title: string;
+  blurb: string;
+  boards: BoardSummary[];
+  flip?: boolean;
+}) {
+  if (boards.length === 0) return null;
+  return (
+    <section className="mt-12">
+      <h2 className="font-typewriter text-2xl uppercase text-foreground">{title}</h2>
+      <p className="mb-6 mt-1 font-mono text-xs text-muted-foreground">{blurb}</p>
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {boards.map((b, i) => (
+          <CaseFileCard key={b.id} board={b} tilt={(i + (flip ? 1 : 0)) % 2 ? 1 : -1} />
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default async function BoardsPage() {
   const [canon, recent, me] = await Promise.all([
@@ -12,6 +37,14 @@ export default async function BoardsPage() {
     listRecentBoards(),
     getCurrentProfile(),
   ]);
+
+  // Canon comes back ranked (featured_rank, then plausibility); partition by
+  // category into the three wings.
+  const scientists = canon.filter((b) => b.category === "person");
+  const disappearances = canon.filter((b) => b.category === "disappearance");
+  const conspiracies = canon.filter(
+    (b) => b.category !== "person" && b.category !== "disappearance",
+  );
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12">
@@ -33,44 +66,40 @@ export default async function BoardsPage() {
 
       <div className="thread-rule my-8 h-px" />
 
-      <section>
-        <h2 className="font-typewriter text-2xl uppercase text-foreground">The Canon</h2>
-        <p className="mb-6 mt-1 font-mono text-xs text-muted-foreground">
-          Ranked by our own plausibility. Argue with the verdict — that&apos;s the point.
-        </p>
-        {canon.length ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {canon.map((b, i) => (
-              <CaseFileCard key={b.id} board={b} tilt={i % 2 ? 1 : -1} />
-            ))}
-          </div>
-        ) : (
-          <p className="font-mono text-sm text-muted-foreground">
-            The canon is still being compiled. The watchers are slow today.
-          </p>
-        )}
-      </section>
+      <Section
+        title="Missing Scientists"
+        blurb="The ones who knew too much. Ranked — with dossiers and competing theories."
+        boards={scientists}
+      />
+      <Section
+        title="Disappearances"
+        blurb="Vanished without a trace — people, ships, expeditions."
+        boards={disappearances}
+      />
+      <Section
+        title="The Canon"
+        blurb="Every case weighed by our own plausibility. Argue with the verdict — that is the point."
+        boards={conspiracies}
+      />
 
-      <section className="mt-14">
-        <h2 className="font-typewriter text-2xl uppercase text-foreground">
-          Recent Case Files
-        </h2>
-        <p className="mb-6 mt-1 font-mono text-xs text-muted-foreground">
-          Opened by operatives in the field.
+      {canon.length === 0 && (
+        <p className="mt-12 font-mono text-sm text-muted-foreground">
+          The canon is still being compiled. The watchers are slow today.
         </p>
-        {recent.length ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {recent.map((b, i) => (
-              <CaseFileCard key={b.id} board={b} tilt={i % 2 ? -1 : 1} />
-            ))}
-          </div>
-        ) : (
-          <p className="font-mono text-sm text-muted-foreground">
-            No operative case files yet.{" "}
-            {me ? "Open the first." : "Initiate to open the first."}
-          </p>
-        )}
-      </section>
+      )}
+
+      <Section
+        title="Recent Case Files"
+        blurb="Opened by operatives in the field."
+        boards={recent}
+        flip
+      />
+      {recent.length === 0 && (
+        <p className="mt-12 font-mono text-sm text-muted-foreground">
+          No operative case files yet.{" "}
+          {me ? "Open the first." : "Initiate to open the first."}
+        </p>
+      )}
     </div>
   );
 }
