@@ -5,13 +5,27 @@ Updated at every checkpoint. The checkbox roadmap is in [ROADMAP.md](ROADMAP.md)
 this is the narrative memory — read top entry first.
 
 ## Status at a glance
-- **Current phase:** Phase 4 polish (search, moderation, themed errors) + **@mentions/Intercepts** done. Remaining: **The Wire** (Phase 3 live data).
-- **Done:** Phase 0 · Phase 1 · Phase 2 (board+inspector+votes+realtime) · Phase 2.5 (forum, InMail, profile media) · dossier · **Phase 5 Canon** · Donate (Black Budget) · **loading states everywhere** · **Phase 4** (full-text search, flag-for-review + moderation queue, themed 404/error) · **@mention/tag + Intercepts (notifications)**
-- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#15 merged.
-- **DB:** apply on merge / `supabase db push` — recent: `supporters`, `roanoke_solved`, `active_files_seed`, `cicada_reframe`, `search`, `reports`, `notifications`. **Canon + these need `db push`.**
-- **Prod (`redthread.red`):** needs Vercel env vars set; then it tracks `main`.
+- **Current phase:** The user's full 1–5 list **+** Phase 3 (The Wire) and Phase 4 (search/moderation/errors) **+** @mentions/Intercepts — all shipped. Remaining = Wire polish (map + cron snapshot) and v2 backlog.
+- **Done:** Phase 0 · Phase 1 · Phase 2 (board+inspector+votes+realtime) · Phase 2.5 (forum, InMail, profile media) · dossier · **Phase 5 Canon** · Donate (Black Budget) · **loading states everywhere** · **Phase 4** (full-text search, flag-for-review + moderation queue, themed 404/error) · **@mention/tag + Intercepts** · **Phase 3 — The Wire (live USGS/OpenSky/GDELT/NASA + pin-to-board)**
+- **Workflow:** branch → commit → PR → **merge to `main`** (per user). PRs #3–#16 merged.
+- **DB:** apply on merge / `supabase db push` — recent: `supporters`, `roanoke_solved`, `active_files_seed`, `cicada_reframe`, `search`, `reports`, `notifications`, `signals`. **Canon + these need `db push`.**
+- **Prod (`redthread.red`):** needs Vercel env vars (incl. `NASA_API_KEY`, `OPENSKY_CLIENT_ID/SECRET`); then it tracks `main`.
 
 ---
+
+### 2026-06-04 — Phase 3: The Wire (live)
+Four real feeds, normalized to one `WireItem` shape (fetch → Zod → normalize →
+graceful degrade): **USGS** quakes (60s), **OpenSky** flights via **OAuth2
+client-credentials** + in-memory token cache, US bbox (30s), **GDELT** events
+(15m), **NASA** APOD (1h). `getWireFeeds()` pulls all in parallel; a dead channel
+degrades to "THE WIRE IS QUIET", never crashes. `/wire` is a tabbed dashboard
+(Seismic/Flights/Events/Sky) with a live-channel pulse; **pin-a-signal** →
+`pinSignal` action caches the `signals` row (insert-if-new for the FK) and inserts
+a `type='signal'` node (board access via RLS; realtime pushes it to watchers).
+`signals` migration + the deferred `nodes.signal_id` FK. **Verified in-browser:
+4/4 channels live** (real quakes w/ mag colors, real flights N406Z/UPS1299/DAL2206,
+NASA nebula); console clean. **Follow-ups:** MapLibre map of geo-signals + Vercel
+Cron snapshot (browsing freshness; pinning already works without it).
 
 ### 2026-06-04 — @mention / tag + Intercepts
 `notifications` table written **only** by a SECURITY DEFINER trigger that parses
