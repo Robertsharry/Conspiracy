@@ -57,6 +57,10 @@ Populate REDTHREAD with real, curated content — our editorial spine.
 - [ ] **The ranked conspiracy canon** — notable conspiracies across domains, each weighed by plausibility with a verdict; the flagship "ranked by us" archive view.
 - [ ] Research-backed for factual accuracy; everything framed as **collaborative speculation** per [SECURITY_AND_MODERATION.md](SECURITY_AND_MODERATION.md) (public/historical figures only, sourced, link-out not host).
 
+## Phase 6 — Extras (later)
+- [ ] **Tag / @mention operatives** — `@shadow_name` in case-notes/posts links to dossiers, with an optional InMail/notification ping. *(User: save for the end.)*
+- [ ] **Donate / "Fund the Operation"** — a themed contribution section that **links out** to a payment provider (Ko-fi / GitHub Sponsors / Stripe Payment Link — we never process payments ourselves). Tiered as clandestine financing ("burner phone" → "bankroll the operation"), with a **Benefactor** dossier flair + an anonymized "wall of patrons." Concept locked; provider TBD by user.
+
 ## v2+ backlog
 - [ ] pgvector "suggested connections" (Voyage/OpenAI embeddings — not Anthropic)
 - [ ] FEC money-graph; Wikidata enrichment; NUFORC static import
